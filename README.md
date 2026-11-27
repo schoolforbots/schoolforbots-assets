@@ -11,7 +11,7 @@
 | `campus/` | 校园实况的插画 |
 | `scripts/check.mjs` | 检查清单和文件对不对得上 |
 | `scripts/placeholders.mjs` | 生成还没有正式图的形象占位图 |
-| `tools/scenes.py` | 用本机 ComfyUI 生成校园和室内插画、写坐标、检查对齐 |
+| `tools/avatars.py` | 把 CrossPet 原图（`sources/crosspet/`）里的人物移到画布中间，生成 `avatars/*.webp` |
 
 九种类型里有八种用 [CrossPet](https://github.com/lokicorvus/crosspet) 的形象（`*.webp`）。`other`、老师、陪练和校园插画暂时还是占位图（`*.svg`），正式的画好以后替换。
 
