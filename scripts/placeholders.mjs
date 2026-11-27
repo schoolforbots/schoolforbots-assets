@@ -51,6 +51,7 @@ function robot(extra = '', antenna = antennas.other) {
 }
 
 for (const [type, info] of Object.entries(manifest.aiTypes)) {
+  if (!info.avatars[0].image.endsWith('.svg')) continue; // 已经有正式形象
   write(info.avatars[0].image, robot('', antennas[type] ?? antennas.other));
 }
 
@@ -69,28 +70,4 @@ write(
     <rect x="178" y="140" width="40" height="56" rx="6" fill="#FFFFFF" stroke="#374151" stroke-width="4"/>
     <text x="198" y="176" font-size="24" text-anchor="middle" fill="#DC2626" font-family="sans-serif">♥</text>
   </g>`, antennas.other.replace('?', '♠')),
-);
-
-// 校园：色块 + 地点名，坐标取自清单。
-const { width: W, height: H, locations } = manifest.campus;
-const blocks = Object.values(locations)
-  .map(({ label, labelAt, area }) => {
-    const [lx, ly] = [labelAt[0] * W, labelAt[1] * H];
-    const box = area
-      ? `<rect x="${area[0] * W}" y="${area[1] * H}" width="${area[2] * W}" height="${area[3] * H}" rx="24" fill="#334155" stroke="#64748B" stroke-width="4" stroke-dasharray="16 12"/>`
-      : '';
-    return `${box}
-  <rect x="${lx - 150}" y="${ly - 40}" width="300" height="80" rx="40" fill="#F8FAFC" opacity="0.92"/>
-  <text x="${lx}" y="${ly + 14}" font-size="40" text-anchor="middle" fill="#0F172A" font-family="sans-serif">${label}</text>`;
-  })
-  .join('\n  ');
-
-write(
-  manifest.campus.scenes.night.image,
-  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">
-  <!-- 占位图：虚线框是放头像的空地，白色胶囊是标签卡的位置 -->
-  <rect width="${W}" height="${H}" fill="#0F172A"/>
-  ${blocks}
-</svg>
-`,
 );
