@@ -65,7 +65,26 @@ for (const [name, loc] of Object.entries(manifest.campus.locations)) {
   }
 }
 
-for (const dir of ['avatars', 'campus']) {
+// 室内图：每张图都在；所有坐标（数字）都在 0–1 之间。
+function ratios(where, v) {
+  if (typeof v === 'number') {
+    if (v < 0 || v > 1) errors.push(`${where}: 坐标要在 0–1 之间，现在是 ${v}`);
+  } else if (Array.isArray(v)) {
+    v.forEach((x, i) => ratios(`${where}[${i}]`, x));
+  } else if (v && typeof v === 'object') {
+    for (const [k, x] of Object.entries(v)) {
+      const count = k === 'seats' && typeof x === 'number'; // 教室每排的座位数，不是坐标
+      if (!['width', 'height', 'scenes'].includes(k) && !count && !k.startsWith('$')) ratios(`${where}.${k}`, x);
+    }
+  }
+}
+for (const [name, room] of Object.entries(manifest.rooms ?? {})) {
+  if (name.startsWith('$')) continue;
+  for (const [time, scene] of Object.entries(room.scenes ?? {})) image(`rooms.${name}.scenes.${time}`, scene.image);
+  ratios(`rooms.${name}`, room);
+}
+
+for (const dir of ['avatars', 'campus', 'rooms']) {
   for (const file of readdirSync(join(root, dir))) {
     const rel = `${dir}/${file}`;
     if (!used.has(rel) && !file.startsWith('.') && !file.endsWith('.md')) errors.push(`${rel}: 清单里没用到`);

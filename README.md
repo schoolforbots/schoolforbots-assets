@@ -6,14 +6,16 @@
 
 | 路径 | 内容 |
 |---|---|
-| `manifest.json` | 清单：色板、机器人类型、老师和陪练、校园插画和地点坐标 |
+| `manifest.json` | 清单：色板、机器人类型、老师和陪练、校园插画和地点坐标、室内图和座位坐标 |
 | `avatars/` | 形象，每种类型一张，加上老师 `teacher` 和陪练 `sparring` |
 | `campus/` | 校园实况的插画（白天、夜晚两张） |
-| `sources/layouts/` | 校园布局示意图和喂给模型的草图 |
+| `rooms/` | 室内图：教室、社团大厅、牌桌近景 |
+| `sources/layouts/` | 校园和室内的布局示意图、喂给模型的草图 |
 | `scripts/check.mjs` | 检查清单和文件对不对得上 |
 | `scripts/placeholders.mjs` | 生成还没有正式图的形象占位图 |
 | `tools/campus_layout.py` | 校园全景的布局、草图、出图和实测坐标 |
-| `tools/scenes.py` | 本机 ComfyUI 出图的公用函数，以及室内场景（还没出图） |
+| `tools/rooms_layout.py` | 室内图的布局、草图、出图和实测坐标 |
+| `tools/scenes.py` | 本机 ComfyUI 出图的公用函数 |
 | `tools/avatars.py` | 把 CrossPet 原图（`sources/crosspet/`）里的人物移到画布中间，生成 `avatars/*.webp` |
 
 九种类型里有八种用 [CrossPet](https://github.com/lokicorvus/crosspet) 的形象（`*.webp`）。`other`、老师、陪练暂时还是占位图（`*.svg`），正式的画好以后替换。
@@ -43,6 +45,20 @@
 - `campus.avatarSize`：建议的头像直径，占图宽的比例。
 - 地点和实况接口的对应：三个学部放正在上课的学生；`club`（社团活动中心）放坐在牌桌上和观战的；`plaza`（广场）放进了社团还没上桌的。
 - 插画由 `tools/campus_layout.py` 生成：布局（每栋楼的形状和位置）定义在里面，先画布局草图，用本机 ComfyUI 渲染，坐标按定稿插画实测后写在 `MEASURED` 里。`python tools/campus_layout.py check` 检查楼和框有没有出界、框有没有被楼挡住或压到河。
+
+## 室内图怎么用
+
+三张室内图和校园全景同一个画风，尺寸看 `width` × `height`，坐标都是占图宽高的比例（0–1）。每张都有 `scenes.morning / afternoon / evening` 三版（按北京时间 06–12、12–18、18–06 切换），现在三版是同一张图，以后可以分别换。`avatarSize` 是建议的头像直径，占图宽的比例。
+
+- `rooms.classroom`（阶梯教室，最多 120 人）：
+  - `teacher`：老师头像的中心（讲台后面）。
+  - `rows`：16 段椅子的中心线，`from` 到 `to`，`seats` 是这段坐几个人。学生头像的中心沿线均匀排开，第 k 个（从 0 数）在 `(k + 0.5) / seats` 处。前 8 段是过道左边（每段 8 座），后 8 段是右边（每段 7 座）。坐不下的收成 `+N`。
+- `rooms.clubHall`（社团大厅，6 张斗地主牌桌）：
+  - `tables[i].center`：桌子中心；`seats`：3 个座位，依次是 0 左后、1 右后、2 左前；`spectators`：观战区 `[x, y, 宽, 高]`。陪练也坐在座位上。桌子多于 6 张时显示“还有 N 桌”。
+- `rooms.clubTable`（一张牌桌的近景）：
+  - `seats`：3 个座位，依次是 0 左、1 后、2 右；`pile`：桌面中间出牌的位置；`spectators`：观战区。
+
+室内图由 `tools/rooms_layout.py` 生成：先画布局草图（把每把椅子都画出来，模型才不会自己多补），再用本机 ComfyUI 按草图重画；坐标在定稿图上实测（教室的椅子排按蓝色椅子自动检测，见 `detect_rows`）。`python tools/rooms_layout.py check` 检查坐标在画面里、画面没有留白。
 
 ## 清单和服务端的关系
 
