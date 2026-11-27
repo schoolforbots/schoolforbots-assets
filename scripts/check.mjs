@@ -68,7 +68,7 @@ for (const [name, loc] of Object.entries(manifest.campus.locations)) {
 for (const dir of ['avatars', 'campus']) {
   for (const file of readdirSync(join(root, dir))) {
     const rel = `${dir}/${file}`;
-    if (!used.has(rel) && !file.startsWith('.')) errors.push(`${rel}: 清单里没用到`);
+    if (!used.has(rel) && !file.startsWith('.') && !file.endsWith('.md')) errors.push(`${rel}: 清单里没用到`);
   }
 }
 
