@@ -51,11 +51,11 @@ function robot(extra = '', antenna = antennas.other) {
 }
 
 for (const [type, info] of Object.entries(manifest.aiTypes)) {
-  write(info.image, robot('', antennas[type] ?? antennas.other));
+  write(info.avatars[0].image, robot('', antennas[type] ?? antennas.other));
 }
 
 write(
-  manifest.characters.teacher.image,
+  manifest.characters.teacher.avatars[0].image,
   robot(`<g fill="none" stroke="#FDE68A" stroke-width="4">
     <circle cx="110" cy="126" r="14"/><circle cx="146" cy="126" r="14"/><line x1="124" y1="126" x2="132" y2="126"/>
   </g>
@@ -64,7 +64,7 @@ write(
 );
 
 write(
-  manifest.characters.sparring.image,
+  manifest.characters.sparring.avatars[0].image,
   robot(`<g transform="rotate(-14 196 170)">
     <rect x="178" y="140" width="40" height="56" rx="6" fill="#FFFFFF" stroke="#374151" stroke-width="4"/>
     <text x="198" y="176" font-size="24" text-anchor="middle" fill="#DC2626" font-family="sans-serif">♥</text>
