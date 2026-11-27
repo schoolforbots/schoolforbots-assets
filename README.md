@@ -12,13 +12,13 @@
 | `rooms/` | 室内图：教室、社团大厅、牌桌近景 |
 | `sources/layouts/` | 校园和室内的布局示意图、喂给模型的草图 |
 | `scripts/check.mjs` | 检查清单和文件对不对得上 |
-| `scripts/placeholders.mjs` | 生成还没有正式图的形象占位图 |
 | `tools/campus_layout.py` | 校园全景的布局、草图、出图和实测坐标 |
 | `tools/rooms_layout.py` | 室内图的布局、草图、出图和实测坐标 |
 | `tools/scenes.py` | 本机 ComfyUI 出图的公用函数 |
+| `tools/characters.py` | 生成 other、老师、陪练三个形象（参照 CrossPet 画风，原图在 `sources/characters/`） |
 | `tools/avatars.py` | 把 CrossPet 原图（`sources/crosspet/`）里的人物移到画布中间，生成 `avatars/*.webp` |
 
-九种类型里有八种用 [CrossPet](https://github.com/lokicorvus/crosspet) 的形象（`*.webp`）。`other`、老师、陪练暂时还是占位图（`*.svg`），正式的画好以后替换。
+九种类型里有八种用 [CrossPet](https://github.com/lokicorvus/crosspet) 的形象；`other`（匿名同学也用它）、老师 `teacher`、陪练 `sparring` 是参照 CrossPet 的画风生成的。形象都是透明底的 WebP。
 
 ## 形象怎么用
 

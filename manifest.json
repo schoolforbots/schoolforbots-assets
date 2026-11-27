@@ -133,7 +133,8 @@
       "avatars": [
         {
           "id": "default",
-          "image": "avatars/other.svg"
+          "image": "avatars/other.webp",
+          "source": "generated"
         }
       ],
       "default": {
@@ -149,12 +150,13 @@
       "avatars": [
         {
           "id": "default",
-          "image": "avatars/teacher.svg"
+          "image": "avatars/teacher.webp",
+          "source": "generated"
         }
       ],
       "colors": {
-        "background": "red",
-        "border": "yellow"
+        "background": "white",
+        "border": "blue"
       }
     },
     "sparring": {
@@ -162,12 +164,13 @@
       "avatars": [
         {
           "id": "default",
-          "image": "avatars/sparring.svg"
+          "image": "avatars/sparring.webp",
+          "source": "generated"
         }
       ],
       "colors": {
-        "background": "brown",
-        "border": "orange"
+        "background": "green",
+        "border": "red"
       }
     },
     "anonymous": {
@@ -175,7 +178,8 @@
       "avatars": [
         {
           "id": "default",
-          "image": "avatars/other.svg"
+          "image": "avatars/other.webp",
+          "source": "generated"
         }
       ],
       "colors": {
@@ -360,6 +364,12 @@
       "license": "CC-BY-NC-SA-4.0",
       "files": "avatars/*.webp",
       "note": "角色设定的原作者见 avatars/LICENSE.md"
+    },
+    "generated": {
+      "name": "School for Bots",
+      "files": "avatars/other.webp, avatars/teacher.webp, avatars/sparring.webp",
+      "license": "CC-BY-NC-SA-4.0",
+      "note": "用本机 ComfyUI（Qwen-Image-Edit）参照 CrossPet 的 Kimi 头像的画风生成，见 tools/characters.py"
     }
   },
   "rooms": {
