@@ -513,13 +513,13 @@ MEASURED = {
     "junior": {"labelAt": (985, 42), "areas": [(895, 245, 180, 72)]},
     "primary": {"labelAt": (245, 368), "areas": [(150, 480, 175, 85)]},
     "plaza": {"labelAt": (775, 368), "areas": [(660, 415, 205, 100)]},
-    "club": {"labelAt": (1165, 292), "areas": [(985, 462, 178, 88)]},
+    "club": {"labelAt": (1165, 292), "areas": [(1150, 385, 178, 88)]},  # 压在两栋楼和连廊上
     "playground": {"labelAt": (1345, 42), "areas": [(1240, 165, 150, 70)]},
     "basketball": {"labelAt": (1495, 283), "areas": [(1435, 330, 125, 60)]},
     "library": {"labelAt": (395, 692), "areas": [(325, 785, 95, 50)]},
     "theatre": {"labelAt": (1245, 700), "areas": [(1110, 845, 105, 50)]},
     "shop": {"labelAt": (1005, 770), "areas": [(900, 848, 70, 30)]},
-    "gate": {"labelAt": (845, 885), "areas": []},
+    "gate": {"labelAt": (845, 890), "areas": []},  # 没有头像区域，标签贴在校门楼顶上方
 }
 LABELS = {
     "senior": "高中部", "junior": "初中部", "primary": "小学部", "plaza": "广场", "club": "社团活动中心",
@@ -528,11 +528,18 @@ LABELS = {
 RESERVED = {"playground", "basketball", "library", "theatre", "shop"}
 
 
+LABEL_GAP = 4  # 标签底边和头像区域上沿之间留的空（像素）
+
+
 def final_locations():
-    """清单里 campus.locations 的内容：比例坐标，一个地点一个 area（取第一个框）。"""
+    """清单里 campus.locations 的内容：比例坐标，一个地点一个 area（取第一个框）。
+    labelAt 是名字标签底边的中点：有头像区域的，紧贴在区域正上方；没有的（校门）用 MEASURED 里的点。"""
     out = {}
     for key, m in MEASURED.items():
         x, y = m["labelAt"]
+        if m["areas"]:
+            ax, ay, aw, ah = m["areas"][0]
+            x, y = ax + aw / 2, ay - LABEL_GAP
         loc = {"label": LABELS[key], "labelAt": [round(x / W, 4), round(y / H, 4)]}
         areas = [[round(a / W, 4), round(b / H, 4), round(c / W, 4), round(d / H, 4)] for a, b, c, d in m["areas"]]
         loc["area"] = areas[0] if areas else None
@@ -552,8 +559,8 @@ def final_overlay(image, out):
             g.rectangle([x * W, y * H, (x + w) * W, (y + h) * H], outline="#FF2D55", width=3)
         lx, ly = loc["labelAt"][0] * W, loc["labelAt"][1] * H
         tw = g.textlength(loc["label"], font=font)
-        g.rounded_rectangle([lx - tw / 2 - 10, ly - 15, lx + tw / 2 + 10, ly + 15], radius=14, fill="#1F2937")
-        g.text((lx - tw / 2, ly - 13), loc["label"], font=font, fill="#FFFFFF")
+        g.rounded_rectangle([lx - tw / 2 - 10, ly - 30, lx + tw / 2 + 10, ly], radius=14, fill="#1F2937")
+        g.text((lx - tw / 2, ly - 28), loc["label"], font=font, fill="#FFFFFF")
     im.save(out)
     print(out)
 
