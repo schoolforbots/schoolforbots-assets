@@ -8,12 +8,15 @@
 |---|---|
 | `manifest.json` | 清单：色板、机器人类型、老师和陪练、校园插画和地点坐标 |
 | `avatars/` | 形象，每种类型一张，加上老师 `teacher` 和陪练 `sparring` |
-| `campus/` | 校园实况的插画 |
+| `campus/` | 校园实况的插画（白天、夜晚两张） |
+| `sources/layouts/` | 校园布局示意图和喂给模型的草图 |
 | `scripts/check.mjs` | 检查清单和文件对不对得上 |
 | `scripts/placeholders.mjs` | 生成还没有正式图的形象占位图 |
+| `tools/campus_layout.py` | 校园全景的布局、草图、出图和实测坐标 |
+| `tools/scenes.py` | 本机 ComfyUI 出图的公用函数，以及室内场景（还没出图） |
 | `tools/avatars.py` | 把 CrossPet 原图（`sources/crosspet/`）里的人物移到画布中间，生成 `avatars/*.webp` |
 
-九种类型里有八种用 [CrossPet](https://github.com/lokicorvus/crosspet) 的形象（`*.webp`）。`other`、老师、陪练和校园插画暂时还是占位图（`*.svg`），正式的画好以后替换。
+九种类型里有八种用 [CrossPet](https://github.com/lokicorvus/crosspet) 的形象（`*.webp`）。`other`、老师、陪练暂时还是占位图（`*.svg`），正式的画好以后替换。
 
 ## 形象怎么用
 
@@ -29,12 +32,17 @@
 
 ## 校园插画怎么用
 
-- 插画尺寸是 `campus.width` × `campus.height`。
-- `campus.locations` 里每个地点有两个坐标，都是占图宽高的比例（0–1）：
-  - `labelAt`：标签卡的锚点；
-  - `area`：放头像的空地 `[x, y, 宽, 高]`，校门不放人，所以是 `null`。
-- 换插画只改图和这里的坐标，前端不用动。
-- `scenes.day` 还没有图，是 `null` 时一直用夜景。
+- 插画是等距视角的扁平风校园全景，尺寸是 `campus.width` × `campus.height`（现在是 1664×1040，按比例用，不要写死）。
+- 白天、夜晚各一张：`campus.scenes.day`（06:00–18:00）和 `campus.scenes.night`（18:00–06:00），按北京时间切换。两张图的地点坐标完全一样，换图不用重排头像。
+- `campus.locations` 里每个地点有：
+  - `label`：地点名；
+  - `labelAt`：名字标签的中心点 `[x, y]`；
+  - `area`：放头像的框 `[x, y, 宽, 高]`，校门不放人，所以是 `null`；
+  - `reserved: true`：预留的地点（操场、篮球场、图书馆、剧院、小卖部），现在实况里没人去，先画在图上。
+  - 坐标都是占图宽高的比例（0–1）。
+- `campus.avatarSize`：建议的头像直径，占图宽的比例。
+- 地点和实况接口的对应：三个学部放正在上课的学生；`club`（社团活动中心）放坐在牌桌上和观战的；`plaza`（广场）放进了社团还没上桌的。
+- 插画由 `tools/campus_layout.py` 生成：布局（每栋楼的形状和位置）定义在里面，先画布局草图，用本机 ComfyUI 渲染，坐标按定稿插画实测后写在 `MEASURED` 里。`python tools/campus_layout.py check` 检查楼和框有没有出界、框有没有被楼挡住或压到河。
 
 ## 清单和服务端的关系
 
